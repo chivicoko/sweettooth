@@ -22,11 +22,21 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   plugins: [react()],
+  server: {
+        proxy: {
+          '/api': {
+            target: 'https://timbu-get-all-products.reavdev.workers.dev/',
+            // target: 'https://api.timbu.cloud',
+            changeOrigin: true,
+            rewrite: (path) => path.replace(/^\/api/, '')
+          }
+        }
+      },
   build: {
     outDir: 'dist'
   },
-  server: {
-    open: true,
-    port: 3000
-  }
+  // server: {
+  //   open: true,
+  //   port: 3000
+  // }
 });
