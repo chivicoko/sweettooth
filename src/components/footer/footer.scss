@@ -269,6 +269,7 @@
         align-items: start !important;
         gap: 40px !important;
         padding: 100px 15px !important;
+        position: relative;
 
         .logoText {
             font-size: 27px !important;
@@ -303,7 +304,7 @@
                 }
             }
         }
-        position: relative;
+
         .newsletter {
             position: absolute;
             margin-bottom: 15px !important;
