@@ -2,7 +2,6 @@ import { useState, useEffect, useRef, MouseEvent, ChangeEvent, KeyboardEvent } f
 import { Link, useLocation } from 'react-router-dom';
 import "./navbar.scss";
 import { useProducts } from '../../contexts/ProductsContext';
-// import { Product } from '../../types'; // Adjust import as per your types
 
 function Navbar() {
   const {
@@ -34,8 +33,7 @@ function Navbar() {
   };
 
   const handleSearchInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.target;
-    setSearchTerm(value);
+    setSearchTerm(event.target.value);
   };
 
   const handleEnterKeyPress = (event: KeyboardEvent<HTMLInputElement>) => {
@@ -83,19 +81,17 @@ function Navbar() {
 
   return (
     <div className="navbar">
-      <div className="logo">
-        <span onClick={toggleMenu} ref={logoRef}>
-          <button>
-            <img src="./images/breadcrumb.png" alt="breadcrumb" loading="lazy" />
-          </button>
-        </span>
-        <span><Link to={'/'}>Sweet Tooth</Link></span>
+      <div className="logo" ref={logoRef}>
+        <button onClick={toggleMenu}>
+          <img src="./images/breadcrumb.png" alt="breadcrumb" loading="lazy" />
+        </button>
+        <Link to="/">Sweet Tooth</Link>
       </div>
 
-      <div className={`menu ${isMenuVisible ? 'visible' : '/'}`} ref={menuRef}>
-        <Link className={activeLink === '/products' ? 'active-link' : '/products'} to={'/products'}>Product</Link>
-        <Link className={activeLink === '/cart' ? 'active-link' : '/cart'} to={'/cart'}>Cart</Link>
-        <Link to={'#'} className="">Contact</Link>
+      <div className={`menu ${isMenuVisible ? 'visible' : ''}`} ref={menuRef}>
+        <Link className={activeLink === '/products' ? 'active-link' : ''} to="/products">Product</Link>
+        <Link className={activeLink === '/cart' ? 'active-link' : ''} to="/cart">Cart</Link>
+        <Link to="#">Contact</Link>
       </div>
 
       <div className="icons">
@@ -111,10 +107,10 @@ function Navbar() {
                 onKeyPress={handleEnterKeyPress}
               />
               {filteredProducts.length > 0 && (
-                <ul className="search-results" style={{paddingInline: '10px'}}>
+                <ul className="search-results" style={{ paddingInline: '10px' }}>
                   {filteredProducts.map(product => (
                     <li key={product.id}>
-                      <Link to={`products/${product.id}`}>
+                      <Link to={`/products/${product.id}`}>
                         {product.name}
                       </Link>
                     </li>
@@ -127,17 +123,13 @@ function Navbar() {
             <img src="./images/search-nav.png" alt="search svg" loading="lazy" />
           </button>
         </div>
-        <button className='wishlistIcon' onClick={() => toggleWishlistModal()}>
+        <button className="wishlistIcon" onClick={toggleWishlistModal}>
           <img src="./images/heart-nav.png" alt="app svg" loading="lazy" />
-          {wishlist.length > 0 && (
-            <span>{wishlist.length}</span>
-          )}
+          {wishlist.length > 0 && <span>{wishlist.length}</span>}
         </button>
-        <Link className='cartIcon' to={'/cart'}>
+        <Link className="cartIcon" to="/cart">
           <img src="./images/mdi_cart-outline-nav.png" alt="expand svg" loading="lazy" />
-          {cart.length > 0 && (
-            <span>{displayCartQuantity}</span>
-          )}
+          {cart.length > 0 && <span>{displayCartQuantity}</span>}
         </Link>
       </div>
 
@@ -170,17 +162,13 @@ function Navbar() {
             <img src="./images/searchMobile.png" alt="search svg" loading="lazy" />
           </button>
         </div>
-        <button className='wishlistIcon' onClick={() => toggleWishlistModal()}>
+        <button className="wishlistIcon" onClick={toggleWishlistModal}>
           <img src="./images/heartMobile.png" alt="app svg" loading="lazy" />
-          {wishlist.length > 0 && (
-            <span>{wishlist.length}</span>
-          )}
+          {wishlist.length > 0 && <span>{wishlist.length}</span>}
         </button>
-        <Link className='cartIcon' to={'/cart'}>
+        <Link className="cartIcon" to="/cart">
           <img src="./images/mdi_cart-outlineMobile.png" alt="expand svg" loading="lazy" />
-          {cart.length > 0 && (
-            <span>{displayCartQuantity}</span>
-          )}
+          {cart.length > 0 && <span>{displayCartQuantity}</span>}
         </Link>
       </div>
     </div>
