@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/navbar/Navbar';
+import Products from './pages/products/Products';
 import Cart from './pages/cart/Cart';
 import Checkout from './pages/checkout/Checkout';
 import Footer from './components/footer/Footer';
@@ -9,7 +10,6 @@ import WishlistModal from './components/wishList/WishlistModal';
 import ProductModal from './components/productModal/ProductModal';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Products from './pages/products/Products';
 
 const App: React.FC = () => {
   return (
@@ -22,7 +22,7 @@ const App: React.FC = () => {
           {/* <Route path="/sweettooth/" element={<Products />} />
           <Route path="/sweettooth/cart" element={<Cart />} />
           <Route path="/sweettooth/checkout" element={<Checkout />} /> */}
-          <Route path="/" element={<Products />} />
+          <Route path="" element={<Products />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/checkout" element={<Checkout />} />
         </Routes>
