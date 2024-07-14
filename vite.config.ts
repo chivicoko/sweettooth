@@ -21,10 +21,11 @@
 
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import * as dotenv from 'dotenv';
+import dotenv from 'dotenv';
+import path from 'path';
 
 // Load environment variables from .env file
-dotenv.config();
+dotenv.config({ path: path.resolve(__dirname, '.env') });
 
 const baseURL = process.env.VITE_APP_API_BASE_URL;
 

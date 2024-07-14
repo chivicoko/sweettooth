@@ -86,7 +86,7 @@ const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({ children })
         const apiKey = import.meta.env.VITE_APP_API_KEY;
         const appid = import.meta.env.VITE_APP_APP_ID;
 
-        const response = await axios.get(`/api/products?organization_id=${organizationId}&reverse_sort=false&page=1&size=12&Appid=${appid}&Apikey=${apiKey}`);
+        const response = await axios.get(`${import.meta.env.VITE_APP_API_BASE_URL}/api/products?organization_id=${organizationId}&reverse_sort=false&page=1&size=12&Appid=${appid}&Apikey=${apiKey}`);
         // const response = await axios.get(`/api/products?organization_id=${organizationId}&reverse_sort=false&page=1&size=12&Appid=${appid}&Apikey=${apiKey}`);
         
         setProducts(response.data.items);
