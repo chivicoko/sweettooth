@@ -42,7 +42,7 @@ const CartSummary = () => {
         </div>
       </div>
       <Link to={'/checkout'} className="checkoutBtn">CHECKOUT</Link>
-      <Link to={'/'} className="continue">CONTINUE SHOPPING</Link>
+      <Link to={'/products'} className="continue">CONTINUE SHOPPING</Link>
     </div>
   );
 };
