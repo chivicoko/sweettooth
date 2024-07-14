@@ -10,14 +10,17 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@eslint/config-array": "^0.17.0",
+    "@eslint/object-schema": "^2.1.4",
     "axios": "^1.7.2",
-    "glob": "^9.3.5",
+    "glob": "^11.0.0",
     "globby": "^14.0.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.24.1",
     "react-scroll": "^1.9.0",
-    "react-toastify": "^10.0.5"
+    "react-toastify": "^10.0.5",
+    "rimraf": "^6.0.1"
   },
   "devDependencies": {
     "@types/node": "^20.14.10",
