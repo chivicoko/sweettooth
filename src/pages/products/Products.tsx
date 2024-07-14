@@ -8,12 +8,12 @@ import { useProducts } from '../../contexts/ProductsContext';
 
 const Products: React.FC = () => {
   const { products, loading, error } = useProducts();
-  const baseURL = import.meta.env.VITE_APP_API_BASE_URL;
+  // const baseURL = import.meta.env.VITE_APP_API_BASE_URL;
 
-  console.log('Products:', products);
-  console.log('Loading:', loading);
-  console.log('Error:', error);
-  console.log('API URL:', `${baseURL}/products?organization_id=51bb0b6a6f0a4aff961fe010f1aea763&reverse_sort=false&page=1&size=12&Appid=L64ZD2LGS9NTOIE&Apikey=a959f36f9a3847f0be6b8d382a152fb920240712161811439641`);
+  // console.log('Products:', products);
+  // console.log('Loading:', loading);
+  // console.log('Error:', error);
+  // console.log('API URL:', `${baseURL}/products?organization_id=51bb0b6a6f0a4aff961fe010f1aea763&reverse_sort=false&page=1&size=12&Appid=L64ZD2LGS9NTOIE&Apikey=a959f36f9a3847f0be6b8d382a152fb920240712161811439641`);
 
 
   if (loading) {
