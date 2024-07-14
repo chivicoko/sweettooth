@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import { Product } from '../types';
 
@@ -17,7 +17,7 @@ interface ProductsContextProps {
   addToCart: (product: Product) => void;
   removeFromCart: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
-  clearCart: () => void; // Add clearCart to the context
+  clearCart: () => void;
   subtotal: number;
   deliveryFee: number;
   total: number;
@@ -45,7 +45,7 @@ const ProductsContext = createContext<ProductsContextProps>({
   addToCart: () => {},
   removeFromCart: () => {},
   updateQuantity: () => {},
-  clearCart: () => {}, // Initialize clearCart
+  clearCart: () => {},
   subtotal: 0,
   deliveryFee: 1000,
   total: 0,
@@ -75,45 +75,57 @@ const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({ children })
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
-
+  const [page, setPage] = useState<number>(1);
+  const [hasMore, setHasMore] = useState<boolean>(true);
+  
+  const observer = useRef<IntersectionObserver | null>(null);
   const deliveryFee = 1000;
+  
+  const lastProductElementRef = useRef<HTMLDivElement | null>(null);
+
+  const fetchProducts = async (page = 1) => {
+    setLoading(true);
+    try {
+      const organizationId = import.meta.env.VITE_APP_ORGANIZATION_ID;
+      const apiKey = import.meta.env.VITE_APP_API_KEY;
+      const appid = import.meta.env.VITE_APP_APP_ID;
+
+      const response = await axios.get(
+        `${import.meta.env.VITE_APP_API_BASE_URL}/api/products?organization_id=${organizationId}&reverse_sort=false&page=${page}&size=12&Appid=${appid}&Apikey=${apiKey}`
+      );
+
+      const newProducts = response.data.items;
+
+      setProducts((prevProducts) => [...prevProducts, ...newProducts]);
+      setFilteredProducts((prevFiltered) => [...prevFiltered, ...newProducts]);
+
+      if (newProducts.length === 0) {
+        setHasMore(false); // No more products to fetch
+      }
+    } catch (error) {
+      setError('Failed to fetch products');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      setLoading(true);
-      try {
-        const organizationId = import.meta.env.VITE_APP_ORGANIZATION_ID;
-        const apiKey = import.meta.env.VITE_APP_API_KEY;
-        const appid = import.meta.env.VITE_APP_APP_ID;
+    fetchProducts(page);
 
-        const response = await axios.get(`${import.meta.env.VITE_APP_API_BASE_URL}/api/products?organization_id=${organizationId}&reverse_sort=false&page=1&size=12&Appid=${appid}&Apikey=${apiKey}`);
-        // const response = await axios.get(`/api/products?organization_id=${organizationId}&reverse_sort=false&page=1&size=12&Appid=${appid}&Apikey=${apiKey}`);
-        
-        setProducts(response.data.items);
-        setFilteredProducts(response.data.items); // Initialize filtered products with all products
-      } catch (error) {
-        setError('Failed to fetch products');
-      } finally {
-        setLoading(false);
-      }
+    const savedWishlist = localStorage.getItem('wishlist');
+    if (savedWishlist) {
+      setWishlist(JSON.parse(savedWishlist));
+    }
 
-      const savedWishlist = localStorage.getItem('wishlist');
-      if (savedWishlist) {
-        setWishlist(JSON.parse(savedWishlist));
-      }
-      
-      const savedCart = localStorage.getItem('cart');
-      if (savedCart) {
-        setCart(JSON.parse(savedCart));
-      }
-    };
-
-    fetchProducts();
-  }, []);
+    const savedCart = localStorage.getItem('cart');
+    if (savedCart) {
+      setCart(JSON.parse(savedCart));
+    }
+  }, [page]);
 
   useEffect(() => {
     if (searchTerm.trim() !== '') {
-      const filtered = products.filter(product =>
+      const filtered = products.filter((product) =>
         product.name.toLowerCase().includes(searchTerm.toLowerCase())
       );
       setFilteredProducts(filtered);
@@ -131,33 +143,39 @@ const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({ children })
   };
 
   const removeFromWishlist = (productId: string) => {
-    const newWishlist = wishlist.filter(id => id !== productId);
+    const newWishlist = wishlist.filter((id) => id !== productId);
     setWishlist(newWishlist);
     localStorage.setItem('wishlist', JSON.stringify(newWishlist));
   };
 
   const addToCart = (product: Product) => {
-    const existingProduct = cart.find(item => item.id === product.id);
+    const existingProduct = cart.find((item) => item.id === product.id);
     if (existingProduct) {
-      setCart(cart.map(item =>
-        item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
-      ));
+      setCart(
+        cart.map((item) =>
+          item.id === product.id
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
+        )
+      );
     } else {
       setCart([...cart, { ...product, quantity: 1 }]);
     }
     localStorage.setItem('cart', JSON.stringify([...cart, { ...product, quantity: 1 }]));
   };
-  
+
   const removeFromCart = (productId: string) => {
-    const updatedCart = cart.filter(item => item.id !== productId);
+    const updatedCart = cart.filter((item) => item.id !== productId);
     setCart(updatedCart);
     localStorage.setItem('cart', JSON.stringify(updatedCart));
   };
 
   const updateQuantity = (productId: string, quantity: number) => {
-    setCart(cart.map(item =>
-      item.id === productId ? { ...item, quantity } : item
-    ));
+    setCart(
+      cart.map((item) =>
+        item.id === productId ? { ...item, quantity } : item
+      )
+    );
   };
 
   const clearCart = () => {
@@ -165,7 +183,10 @@ const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({ children })
     localStorage.removeItem('cart');
   };
 
-  const subtotal = cart.reduce((sum, item) => sum + item.current_price[0].NGN[0] * item.quantity, 0);
+  const subtotal = cart.reduce(
+    (sum, item) => sum + item.current_price[0].NGN[0] * item.quantity,
+    0
+  );
   const total = subtotal + deliveryFee;
 
   const toggleProductModal = () => {
@@ -176,18 +197,54 @@ const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({ children })
     setShowWishlistModal(!showWishlistModal);
   };
 
+  useEffect(() => {
+    if (loading) return;
+
+    if (observer.current) observer.current.disconnect();
+
+    observer.current = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting && hasMore) {
+        setPage((prevPage) => prevPage + 1);
+      }
+    });
+
+    if (lastProductElementRef.current) {
+      observer.current.observe(lastProductElementRef.current);
+    }
+  }, [loading, hasMore]);
+
   return (
-    <ProductsContext.Provider value={{
-      products, loading, error, wishlist, addToWishlist, removeFromWishlist,
-      cart, addToCart, removeFromCart, updateQuantity, clearCart, subtotal, deliveryFee, total,
-      showProductModal, toggleProductModal, showWishlistModal, toggleWishlistModal,
-      selectedProduct, setSelectedProduct,
-      searchTerm, setSearchTerm,
-      filteredProducts,
-      setFilteredProducts,
-      cartQuantity: cart.reduce((total, item) => total + item.quantity, 0),
-    }}>
+    <ProductsContext.Provider
+      value={{
+        products,
+        loading,
+        error,
+        wishlist,
+        addToWishlist,
+        removeFromWishlist,
+        cart,
+        addToCart,
+        removeFromCart,
+        updateQuantity,
+        clearCart,
+        subtotal,
+        deliveryFee,
+        total,
+        showProductModal,
+        toggleProductModal,
+        showWishlistModal,
+        toggleWishlistModal,
+        selectedProduct,
+        setSelectedProduct,
+        searchTerm,
+        setSearchTerm,
+        filteredProducts,
+        setFilteredProducts,
+        cartQuantity: cart.reduce((total, item) => total + item.quantity, 0),
+      }}
+    >
       {children}
+      <div ref={lastProductElementRef} />
     </ProductsContext.Provider>
   );
 };

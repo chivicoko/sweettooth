@@ -12,7 +12,7 @@ const ProductsContext = createContext({
     addToCart: () => { },
     removeFromCart: () => { },
     updateQuantity: () => { },
-    clearCart: () => { }, // Initialize clearCart
+    clearCart: () => { },
     subtotal: 0,
     deliveryFee: 1000,
     total: 0,
@@ -41,38 +41,41 @@ const ProductsProvider = ({ children }) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [filteredProducts, setFilteredProducts] = useState([]);
     const deliveryFee = 1000;
+    const fetchProducts = async (page = 1) => {
+        setLoading(true);
+        try {
+            const organizationId = import.meta.env.VITE_APP_ORGANIZATION_ID;
+            const apiKey = import.meta.env.VITE_APP_API_KEY;
+            const appid = import.meta.env.VITE_APP_APP_ID;
+            const response = await axios.get(`${import.meta.env.VITE_APP_API_BASE_URL}/api/products?organization_id=${organizationId}&reverse_sort=false&page=${page}&size=12&Appid=${appid}&Apikey=${apiKey}`);
+            const newProducts = response.data.items;
+            setProducts((prevProducts) => [...prevProducts, ...newProducts]);
+            setFilteredProducts((prevFiltered) => [...prevFiltered, ...newProducts]);
+            if (newProducts.length > 0) {
+                fetchProducts(page + 1); // Fetch next page
+            }
+        }
+        catch (error) {
+            setError('Failed to fetch products');
+        }
+        finally {
+            setLoading(false);
+        }
+    };
     useEffect(() => {
-        const fetchProducts = async () => {
-            setLoading(true);
-            try {
-                const organizationId = import.meta.env.VITE_APP_ORGANIZATION_ID;
-                const apiKey = import.meta.env.VITE_APP_API_KEY;
-                const appid = import.meta.env.VITE_APP_APP_ID;
-                const response = await axios.get(`${import.meta.env.VITE_APP_API_BASE_URL}/api/products?organization_id=${organizationId}&reverse_sort=false&page=1&size=12&Appid=${appid}&Apikey=${apiKey}`);
-                // const response = await axios.get(`/api/products?organization_id=${organizationId}&reverse_sort=false&page=1&size=12&Appid=${appid}&Apikey=${apiKey}`);
-                setProducts(response.data.items);
-                setFilteredProducts(response.data.items); // Initialize filtered products with all products
-            }
-            catch (error) {
-                setError('Failed to fetch products');
-            }
-            finally {
-                setLoading(false);
-            }
-            const savedWishlist = localStorage.getItem('wishlist');
-            if (savedWishlist) {
-                setWishlist(JSON.parse(savedWishlist));
-            }
-            const savedCart = localStorage.getItem('cart');
-            if (savedCart) {
-                setCart(JSON.parse(savedCart));
-            }
-        };
         fetchProducts();
+        const savedWishlist = localStorage.getItem('wishlist');
+        if (savedWishlist) {
+            setWishlist(JSON.parse(savedWishlist));
+        }
+        const savedCart = localStorage.getItem('cart');
+        if (savedCart) {
+            setCart(JSON.parse(savedCart));
+        }
     }, []);
     useEffect(() => {
         if (searchTerm.trim() !== '') {
-            const filtered = products.filter(product => product.name.toLowerCase().includes(searchTerm.toLowerCase()));
+            const filtered = products.filter((product) => product.name.toLowerCase().includes(searchTerm.toLowerCase()));
             setFilteredProducts(filtered);
         }
         else {
@@ -87,14 +90,16 @@ const ProductsProvider = ({ children }) => {
         }
     };
     const removeFromWishlist = (productId) => {
-        const newWishlist = wishlist.filter(id => id !== productId);
+        const newWishlist = wishlist.filter((id) => id !== productId);
         setWishlist(newWishlist);
         localStorage.setItem('wishlist', JSON.stringify(newWishlist));
     };
     const addToCart = (product) => {
-        const existingProduct = cart.find(item => item.id === product.id);
+        const existingProduct = cart.find((item) => item.id === product.id);
         if (existingProduct) {
-            setCart(cart.map(item => item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item));
+            setCart(cart.map((item) => item.id === product.id
+                ? { ...item, quantity: item.quantity + 1 }
+                : item));
         }
         else {
             setCart([...cart, { ...product, quantity: 1 }]);
@@ -102,12 +107,12 @@ const ProductsProvider = ({ children }) => {
         localStorage.setItem('cart', JSON.stringify([...cart, { ...product, quantity: 1 }]));
     };
     const removeFromCart = (productId) => {
-        const updatedCart = cart.filter(item => item.id !== productId);
+        const updatedCart = cart.filter((item) => item.id !== productId);
         setCart(updatedCart);
         localStorage.setItem('cart', JSON.stringify(updatedCart));
     };
     const updateQuantity = (productId, quantity) => {
-        setCart(cart.map(item => item.id === productId ? { ...item, quantity } : item));
+        setCart(cart.map((item) => item.id === productId ? { ...item, quantity } : item));
     };
     const clearCart = () => {
         setCart([]);
@@ -122,11 +127,28 @@ const ProductsProvider = ({ children }) => {
         setShowWishlistModal(!showWishlistModal);
     };
     return (_jsx(ProductsContext.Provider, { value: {
-            products, loading, error, wishlist, addToWishlist, removeFromWishlist,
-            cart, addToCart, removeFromCart, updateQuantity, clearCart, subtotal, deliveryFee, total,
-            showProductModal, toggleProductModal, showWishlistModal, toggleWishlistModal,
-            selectedProduct, setSelectedProduct,
-            searchTerm, setSearchTerm,
+            products,
+            loading,
+            error,
+            wishlist,
+            addToWishlist,
+            removeFromWishlist,
+            cart,
+            addToCart,
+            removeFromCart,
+            updateQuantity,
+            clearCart,
+            subtotal,
+            deliveryFee,
+            total,
+            showProductModal,
+            toggleProductModal,
+            showWishlistModal,
+            toggleWishlistModal,
+            selectedProduct,
+            setSelectedProduct,
+            searchTerm,
+            setSearchTerm,
             filteredProducts,
             setFilteredProducts,
             cartQuantity: cart.reduce((total, item) => total + item.quantity, 0),
