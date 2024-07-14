@@ -1,0 +1,325 @@
+@import "../../styles/variables.scss";
+
+.footerContainer {
+    background: $dark-bg;
+    font-family: "Jost", system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    
+    .footer {
+        padding: 95px 65px 70px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+
+        .logoText {
+            color: $secondary-color;
+            font-size: 36px;
+            font-weight: 700;
+            line-height: 45.6px;
+            width: 30.33%;
+        }
+
+        .info {
+            width: 39.33%;
+            display: flex;
+            gap: 80px;
+
+            .category, .contact {
+
+                .title {
+                    font-size: 30px;
+                    font-weight: 400;
+                    line-height: 35.68px;
+                    margin-bottom: 25px;
+                }
+
+                .list {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 12px;
+
+                    li {
+                        list-style: none;
+                        font-size: 18px;
+                        font-weight: 400;
+                        line-height: 23.76px;
+
+                        .icons {
+                            display: flex;
+                            justify-content: start;
+                            gap: 20px;
+                            width: 50% !important;
+
+                            a img {
+                                width: 30px;
+                                height: 30px;
+                            }
+
+                            a:hover {
+                                transform: translateY(-2px);
+                            }
+                        }
+                    }
+                    
+                    .item:hover {
+                        transform: translateY(-2px);
+                    }
+                }
+            }
+        }
+
+        .newsletter {
+            width: 30.33%;
+            height: 35px;
+
+            p {
+                margin-bottom: 15px;
+            }
+
+            .inputGroup {
+                height: 35px;
+                width: 100%;
+                background: $special-bg;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                position: relative;
+                
+                input {
+                    width: 100%;
+                    height: 100%;
+                    padding-block: 5px;
+                    padding-left: 20px;
+                    border: none;
+                    background: $special-bg;
+                    color: $dark-bg;
+                }
+                
+                input::placeholder {
+                    color: $dark-bg;
+                    font-family: "Jost", system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+                }
+
+                img {
+                    position: absolute;
+                    right: 15px;
+                }
+            }
+        }
+    }
+
+    .lowerFooter {
+        padding-block: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-top: 1px solid $halfdark-color;
+        font-family: "Jost", system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    }
+}
+
+
+@media (max-width: 1024px) {
+    
+    .footer {
+        padding: 65px 60px 50px !important;
+
+        .logoText {
+            font-size: 32px !important;
+            line-height: 35.6px !important;
+        }
+
+        .info {
+            gap: 30px !important;
+
+            .category, .contact {
+
+                .title {
+                    font-size: 22px !important;
+                    line-height: 22.68px !important;
+                }
+
+                .list {
+                    gap: 9px !important;
+
+                    li {
+                        font-size: 15px !important;
+                        line-height: 22.76px !important;
+                    }
+                }
+            }
+        }
+
+        .newsletter {
+
+            p {
+                margin-bottom: 15px;
+                font-size: 15px;
+            }
+
+            .inputGroup {
+                height: 30px !important;
+                
+                input {
+                    padding-block: 3px !important;
+                    padding-left: 10px !important;
+                }
+
+                img {
+                    right: 10px !important;
+                }
+            }
+        }
+    }
+
+}
+
+
+@media (max-width: 799px) {
+    .footer {
+        flex-direction: column;
+        align-items: center !important;
+        gap: 50px !important;
+        padding: 90px 15px !important;
+
+        .logoText {
+            font-size: 50px !important;
+            line-height: 44.8px !important;
+            width: 100% !important;
+            text-align: center;
+        }
+        
+        .info {
+            gap: 90px !important;
+            width: 100% !important;
+            justify-content: center;
+            
+            .category, .contact {
+                
+                .title {
+                    font-size: 32px !important;
+                    line-height: 29.76px !important;
+                    margin-bottom: 30px !important;
+                }
+
+                .list {
+                    gap: 20px !important;
+                    margin-bottom: 20px;
+
+                    li {
+                        font-size: 19px !important;
+                        line-height: 19.84px !important;
+
+                        .icons {
+                            display: flex;
+                            justify-content: start;
+                            gap: 20px;
+                        }
+                    }
+                }
+            }
+        }
+        
+        .newsletter {
+            margin-bottom: 20px !important;
+            width: 65vw !important;
+
+            p {
+                font-size: 18px !important;
+                text-align: center;
+            }
+
+            .inputGroup {
+                height: 35px;
+                width: 65vw !important;
+                background: $special-bg;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                position: relative;
+                
+                input {
+                    width: 100%;
+                    height: 100%;
+                    padding-block: 5px;
+                    padding-left: 20px;
+                    border: none;
+                    background: $special-bg;
+                    color: $dark-bg;
+                }
+                
+                input::placeholder {
+                    color: $dark-bg;
+                    font-family: "Jost", system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+                }
+
+                img {
+                    position: absolute;
+                    right: 15px;
+                }
+            }
+        }
+    }
+}
+
+
+@media (max-width: 480px) {
+    .footer {
+        flex-direction: column;
+        align-items: start !important;
+        gap: 40px !important;
+        padding: 100px 15px !important;
+
+        .logoText {
+            font-size: 27px !important;
+            line-height: 14.8px !important;
+        }
+        
+        .info {
+            gap: 80px !important;
+            
+            .category, .contact {
+                
+                .title {
+                    font-size: 20px !important;
+                    line-height: 29.76px !important;
+                    margin-bottom: 30px !important;
+                }
+
+                .list {
+                    gap: 25px !important;
+                    margin-bottom: 40px;
+
+                    li {
+                        font-size: 14px !important;
+                        line-height: 13.84px !important;
+
+                        .icons {
+                            display: flex;
+                            justify-content: start;
+                            gap: 20px;
+                        }
+                    }
+                }
+            }
+        }
+        position: relative;
+        .newsletter {
+            position: absolute;
+            margin-bottom: 15px !important;
+            width: 80vw !important;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+
+            p {
+                font-size: 15px !important;
+            }
+            
+            .inputGroup {
+                width: 80vw !important;
+            }
+
+        }
+    }
+}
