@@ -6,7 +6,7 @@ const Footer = () => {
   return (
     <div className="footerContainer">
       <div className="footer">
-        <span className="logoText"><Link to={'/products'}>Sweet Tooth</Link></span>
+        <span className="logoText"><Link to={'/'}>Sweet Tooth</Link></span>
         <div className="info">
           <div className="category">
             <div className="title">Category</div>
@@ -15,7 +15,7 @@ const Footer = () => {
                 <Link to={'/'}>Home</Link>
               </li>
               <li className="listItem item">
-                <Link to={'/products'}>Product</Link>
+                <Link to={'/'}>Product</Link>
               </li>
               <li className="listItem item">
                 <Link to={'/cart'}>Cart</Link>

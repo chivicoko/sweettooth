@@ -89,11 +89,11 @@ function Navbar() {
             <img src="./images/breadcrumb.png" alt="breadcrumb" loading="lazy" />
           </button>
         </span>
-        <span><Link to={'/products'}>Sweet Tooth</Link></span>
+        <span><Link to={'/'}>Sweet Tooth</Link></span>
       </div>
 
       <div className={`menu ${isMenuVisible ? 'visible' : '/'}`} ref={menuRef}>
-        <Link className={activeLink === '/products' ? 'active-link' : '/products'} to={'/products'}>Product</Link>
+        <Link className={activeLink === '/' ? 'active-link' : '/'} to={'/'}>Product</Link>
         <Link className={activeLink === '/cart' ? 'active-link' : '/cart'} to={'/cart'}>Cart</Link>
         <Link to={'#'} className="">Contact</Link>
       </div>
@@ -114,7 +114,7 @@ function Navbar() {
                 <ul className="search-results" style={{paddingInline: '10px'}}>
                   {filteredProducts.map(product => (
                     <li key={product.id}>
-                      <Link to={`/products/${product.id}`}>
+                      <Link to={`/${product.id}`}>
                         {product.name}
                       </Link>
                     </li>
