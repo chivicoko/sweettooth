@@ -93,7 +93,7 @@ function Navbar() {
       </div>
 
       <div className={`menu ${isMenuVisible ? 'visible' : '/'}`} ref={menuRef}>
-        <Link className={activeLink === '/' ? 'active-link' : '/'} to={'/'}>Product</Link>
+        <Link className={activeLink === '/products' ? 'active-link' : '/products'} to={'/products'}>Product</Link>
         <Link className={activeLink === '/cart' ? 'active-link' : '/cart'} to={'/cart'}>Cart</Link>
         <Link to={'#'} className="">Contact</Link>
       </div>
@@ -114,7 +114,7 @@ function Navbar() {
                 <ul className="search-results" style={{paddingInline: '10px'}}>
                   {filteredProducts.map(product => (
                     <li key={product.id}>
-                      <Link to={`/${product.id}`}>
+                      <Link to={`products/${product.id}`}>
                         {product.name}
                       </Link>
                     </li>
