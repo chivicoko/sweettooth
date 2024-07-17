@@ -20,6 +20,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   //   const newToastId = toast(message);
   //   setToastId(newToastId);
   // };
+  console.log(product);
+  
   
 
   // const notify = () => toast.success(`Successfully added ${product.name} to cart!`);
@@ -47,7 +49,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         </button>
       </div>
       <div className="productImageContainer" onClick={handleProductClick}>
-        <img className="productImage" src={`${baseURL}/images/${product.photos[0]?.url}`} alt={product.name} loading="lazy" />
+        <img className="productImage" src={`${baseURL}/images/${product.photos[0]?.url}` || product.image || './images/placeholderImage.png'} alt={product.name} loading="lazy" />
       </div>
       <p className="productName" onClick={handleProductClick}>
         {product.name}

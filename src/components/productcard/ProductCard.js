@@ -13,6 +13,7 @@ const ProductCard = ({ product }) => {
     //   const newToastId = toast(message);
     //   setToastId(newToastId);
     // };
+    console.log(product);
     // const notify = () => toast.success(`Successfully added ${product.name} to cart!`);
     const { setSelectedProduct, toggleProductModal, addToCart, addToWishlist, removeFromWishlist, wishlist } = useProducts();
     const baseURL = "https://api.timbu.cloud";
@@ -28,6 +29,6 @@ const ProductCard = ({ product }) => {
             addToWishlist(product.id);
         }
     };
-    return (_jsxs("div", { className: "product", children: [_jsx("div", { className: "favorite", children: _jsx("button", { onClick: handleWishlistClick, children: _jsx("img", { className: 'favoriteBtn', src: wishlist.includes(product.id) ? "./images/mdi_heart.png" : "./images/favorite.png", alt: "favorite", loading: "lazy" }) }) }), _jsx("div", { className: "productImageContainer", onClick: handleProductClick, children: _jsx("img", { className: "productImage", src: `${baseURL}/images/${product.photos[0]?.url}`, alt: product.name, loading: "lazy" }) }), _jsx("p", { className: "productName", onClick: handleProductClick, children: product.name }), _jsxs("div", { className: "productFooter", children: [_jsxs("div", { className: "text", children: [_jsx("span", { className: "weight", children: product.weight }), _jsxs("span", { className: "amount", children: ["$", product.current_price[0].NGN[0]] })] }), _jsx("div", { className: "cart", onClick: () => { addToCart(product); }, children: _jsx(Link, { to: "#", children: _jsx("img", { src: "./images/mdi_cart-outline.png", alt: "Cart", loading: "lazy" }) }) })] })] }, product.id));
+    return (_jsxs("div", { className: "product", children: [_jsx("div", { className: "favorite", children: _jsx("button", { onClick: handleWishlistClick, children: _jsx("img", { className: 'favoriteBtn', src: wishlist.includes(product.id) ? "./images/mdi_heart.png" : "./images/favorite.png", alt: "favorite", loading: "lazy" }) }) }), _jsx("div", { className: "productImageContainer", onClick: handleProductClick, children: _jsx("img", { className: "productImage", src: `${baseURL}/images/${product.photos[0]?.url}` || product.image || './images/placeholderImage.png', alt: product.name, loading: "lazy" }) }), _jsx("p", { className: "productName", onClick: handleProductClick, children: product.name }), _jsxs("div", { className: "productFooter", children: [_jsxs("div", { className: "text", children: [_jsx("span", { className: "weight", children: product.weight }), _jsxs("span", { className: "amount", children: ["$", product.current_price[0].NGN[0]] })] }), _jsx("div", { className: "cart", onClick: () => { addToCart(product); }, children: _jsx(Link, { to: "#", children: _jsx("img", { src: "./images/mdi_cart-outline.png", alt: "Cart", loading: "lazy" }) }) })] })] }, product.id));
 };
 export default ProductCard;

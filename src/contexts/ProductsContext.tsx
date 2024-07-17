@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import { Product } from '../types';
+import { products as localProducts } from '../data'; // Import local data
 
 interface CartItem extends Product {
   quantity: number;
@@ -65,7 +66,7 @@ const ProductsContext = createContext<ProductsContextProps>({
 export const useProducts = () => useContext(ProductsContext);
 
 const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<Product[]>(localProducts); // Initialize with local data
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [wishlist, setWishlist] = useState<string[]>([]);
@@ -94,23 +95,31 @@ const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({ children })
         `${import.meta.env.VITE_APP_API_BASE_URL}/api/products?organization_id=${organizationId}&reverse_sort=false&page=${page}&size=12&Appid=${appid}&Apikey=${apiKey}`
       );
 
-      const newProducts = response.data.items;
-
-      setProducts((prevProducts) => [...prevProducts, ...newProducts]);
-      setFilteredProducts((prevFiltered) => [...prevFiltered, ...newProducts]);
-
-      if (newProducts.length === 0) {
-        setHasMore(false); // No more products to fetch
+      if (response && response.data && response.data.items) {
+        const newProducts = response.data.items;
+  
+        setProducts((prevProducts) => [...prevProducts, ...newProducts]);
+        setFilteredProducts((prevFiltered) => [...prevFiltered, ...newProducts]);
+  
+        if (newProducts.length === 0) {
+          setHasMore(false); // No more products to fetch
+        }
+      } else {
+        setError('Failed to fetch products from the API');
+        setProducts(localProducts); // Fallback to local data
+        setFilteredProducts(localProducts); // Fallback to local data
       }
     } catch (error) {
       setError('Failed to fetch products');
+      setProducts(localProducts); // Fallback to local data
+      setFilteredProducts(localProducts); // Fallback to local data
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchProducts(page);
+    // fetchProducts(page);
 
     const savedWishlist = localStorage.getItem('wishlist');
     if (savedWishlist) {

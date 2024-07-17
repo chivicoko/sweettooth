@@ -1,6 +1,7 @@
-import { jsx as _jsx } from "react/jsx-runtime";
-import { createContext, useContext, useEffect, useState } from 'react';
+import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
+import { createContext, useContext, useEffect, useState, useRef } from 'react';
 import axios from 'axios';
+import { products as localProducts } from '../data'; // Import local data
 const ProductsContext = createContext({
     products: [],
     loading: false,
@@ -30,7 +31,7 @@ const ProductsContext = createContext({
 });
 export const useProducts = () => useContext(ProductsContext);
 const ProductsProvider = ({ children }) => {
-    const [products, setProducts] = useState([]);
+    const [products, setProducts] = useState(localProducts); // Initialize with local data
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [wishlist, setWishlist] = useState([]);
@@ -40,7 +41,11 @@ const ProductsProvider = ({ children }) => {
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [filteredProducts, setFilteredProducts] = useState([]);
+    const [page, setPage] = useState(1);
+    const [hasMore, setHasMore] = useState(true);
+    const observer = useRef(null);
     const deliveryFee = 1000;
+    const lastProductElementRef = useRef(null);
     const fetchProducts = async (page = 1) => {
         setLoading(true);
         try {
@@ -48,22 +53,31 @@ const ProductsProvider = ({ children }) => {
             const apiKey = import.meta.env.VITE_APP_API_KEY;
             const appid = import.meta.env.VITE_APP_APP_ID;
             const response = await axios.get(`${import.meta.env.VITE_APP_API_BASE_URL}/api/products?organization_id=${organizationId}&reverse_sort=false&page=${page}&size=12&Appid=${appid}&Apikey=${apiKey}`);
-            const newProducts = response.data.items;
-            setProducts((prevProducts) => [...prevProducts, ...newProducts]);
-            setFilteredProducts((prevFiltered) => [...prevFiltered, ...newProducts]);
-            if (newProducts.length > 0) {
-                fetchProducts(page + 1); // Fetch next page
+            if (response && response.data && response.data.items) {
+                const newProducts = response.data.items;
+                setProducts((prevProducts) => [...prevProducts, ...newProducts]);
+                setFilteredProducts((prevFiltered) => [...prevFiltered, ...newProducts]);
+                if (newProducts.length === 0) {
+                    setHasMore(false); // No more products to fetch
+                }
+            }
+            else {
+                setError('Failed to fetch products from the API');
+                setProducts(localProducts); // Fallback to local data
+                setFilteredProducts(localProducts); // Fallback to local data
             }
         }
         catch (error) {
             setError('Failed to fetch products');
+            setProducts(localProducts); // Fallback to local data
+            setFilteredProducts(localProducts); // Fallback to local data
         }
         finally {
             setLoading(false);
         }
     };
     useEffect(() => {
-        fetchProducts();
+        // fetchProducts(page);
         const savedWishlist = localStorage.getItem('wishlist');
         if (savedWishlist) {
             setWishlist(JSON.parse(savedWishlist));
@@ -72,7 +86,7 @@ const ProductsProvider = ({ children }) => {
         if (savedCart) {
             setCart(JSON.parse(savedCart));
         }
-    }, []);
+    }, [page]);
     useEffect(() => {
         if (searchTerm.trim() !== '') {
             const filtered = products.filter((product) => product.name.toLowerCase().includes(searchTerm.toLowerCase()));
@@ -126,7 +140,21 @@ const ProductsProvider = ({ children }) => {
     const toggleWishlistModal = () => {
         setShowWishlistModal(!showWishlistModal);
     };
-    return (_jsx(ProductsContext.Provider, { value: {
+    useEffect(() => {
+        if (loading)
+            return;
+        if (observer.current)
+            observer.current.disconnect();
+        observer.current = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting && hasMore) {
+                setPage((prevPage) => prevPage + 1);
+            }
+        });
+        if (lastProductElementRef.current) {
+            observer.current.observe(lastProductElementRef.current);
+        }
+    }, [loading, hasMore]);
+    return (_jsxs(ProductsContext.Provider, { value: {
             products,
             loading,
             error,
@@ -152,6 +180,6 @@ const ProductsProvider = ({ children }) => {
             filteredProducts,
             setFilteredProducts,
             cartQuantity: cart.reduce((total, item) => total + item.quantity, 0),
-        }, children: children }));
+        }, children: [children, _jsx("div", { ref: lastProductElementRef })] }));
 };
 export default ProductsProvider;
