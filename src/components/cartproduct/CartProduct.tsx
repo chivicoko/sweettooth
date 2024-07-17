@@ -35,7 +35,10 @@ const CartProduct: React.FC<CartProductProps> = ({ product }) => {
       <div className="listItem" key={product.id}>
         <div className="product">
           <div className="imageContainer" onClick={handleProductClick}>
-            <img src={`${baseURL}/images/${product.photos[0]?.url}`} alt={product.name} loading="lazy" />
+            {/* <img src={`${baseURL}/images/${product.photos[0]?.url}`} alt={product.name} loading="lazy" /> */}
+            <img src={product.photos[0]?.url && !product.photos[0].url.startsWith('./images/')
+                    ? `${baseURL}/images/${product.photos[0].url}`
+                    : product.image || './images/placeholderImage.png'} alt={product.name} loading="lazy" />
           </div>
           <div className="productName" onClick={handleProductClick}>
             <span className="name">{product.name}</span>

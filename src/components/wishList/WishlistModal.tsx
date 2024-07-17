@@ -14,6 +14,8 @@ const WishlistModal: React.FC = () => {
   if (!showWishlistModal) return null;
 
   const wishlistProducts = products.filter(product => wishlist.includes(product.id));
+  
+  const baseURL = "https://api.timbu.cloud";
 
   return (
     <div className="modal-overlay" onClick={toggleWishlistModal}>
@@ -30,7 +32,10 @@ const WishlistModal: React.FC = () => {
               <li key={product.id}>
                 <img
                   style={{cursor: 'pointer'}}
-                  src={`https://api.timbu.cloud/images/${product.photos[0]?.url}`}
+                  // src={`https://api.timbu.cloud/images/${product.photos[0]?.url}`}
+                  src={product.photos[0]?.url && !product.photos[0].url.startsWith('./images/')
+                    ? `${baseURL}/images/${product.photos[0].url}`
+                    : product.image || './images/placeholderImage.png'}
                   onClick={() => handleProductClick(product)}
                   alt={product.name}
                 />

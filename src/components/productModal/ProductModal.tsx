@@ -7,13 +7,18 @@ const ProductModal: React.FC = () => {
   
 
   if (!showProductModal || !selectedProduct) return null;
+  
+  const baseURL = "https://api.timbu.cloud";
 
   return (
     <div className="product-modal-overlay" onClick={toggleProductModal}>
       <div className="product-modal-content" onClick={(e) => e.stopPropagation()}>
         <button className="product-modal-close" onClick={toggleProductModal}>X</button>
         <h2>{selectedProduct?.name}</h2>
-        <img src={`https://api.timbu.cloud/images/${selectedProduct?.photos[0]?.url}`} alt={selectedProduct?.name} loading="lazy" />
+        <img src={selectedProduct.photos[0]?.url && !selectedProduct.photos[0].url.startsWith('./images/')
+                    ? `${baseURL}/images/${selectedProduct.photos[0].url}`
+                    : selectedProduct.image || './images/placeholderImage.png'} alt={selectedProduct?.name} loading="lazy" />
+        {/* <img src={`https://api.timbu.cloud/images/${selectedProduct?.photos[0]?.url}`} alt={selectedProduct?.name} loading="lazy" /> */}
         <p className='description' style={{padding: '15px'}}>{selectedProduct?.description}</p>
         <p className='price'>Amount: ${selectedProduct?.current_price[0]?.NGN[0]}</p>
       </div>

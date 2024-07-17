@@ -47,11 +47,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       ? product.image 
       : './images/placeholderImage.png';
 
-  console.log('Photo URL:', photoUrl);
-  console.log('Final Image URL:', imageUrl);
-
-
-
   return (
     <div className="product" key={product.id}>
       <div className="favorite">
