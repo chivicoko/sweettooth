@@ -20,14 +20,12 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   //   const newToastId = toast(message);
   //   setToastId(newToastId);
   // };
-  console.log(product);
   
   
 
   // const notify = () => toast.success(`Successfully added ${product.name} to cart!`);
   const { setSelectedProduct, toggleProductModal, addToCart, addToWishlist, removeFromWishlist, wishlist } = useProducts();
-  const baseURL = "https://api.timbu.cloud";
-
+  
   const handleProductClick = () => {
     setSelectedProduct(product);
     toggleProductModal();
@@ -40,6 +38,19 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       addToWishlist(product.id);
     }
   };
+  
+  const baseURL = "https://api.timbu.cloud";
+  const photoUrl = product.photos[0]?.url;
+  const imageUrl = photoUrl && !photoUrl.startsWith('./images/')
+    ? `${baseURL}/images/${photoUrl}`
+    : product.image 
+      ? product.image 
+      : './images/placeholderImage.png';
+
+  console.log('Photo URL:', photoUrl);
+  console.log('Final Image URL:', imageUrl);
+
+
 
   return (
     <div className="product" key={product.id}>
@@ -49,7 +60,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         </button>
       </div>
       <div className="productImageContainer" onClick={handleProductClick}>
-        <img className="productImage" src={`${baseURL}/images/${product.photos[0]?.url}` || product.image || './images/placeholderImage.png'} alt={product.name} loading="lazy" />
+        <img className="productImage" src={imageUrl} alt={product.name} loading="lazy" />
+        {/* <img className="productImage" src={product.image || "./images/placeholderImage.png"} alt={product.name} loading="lazy" /> */}
+        {/* <img className="productImage" src="./images/placeholderImage.png" alt={product.name} loading="lazy" /> */}
       </div>
       <p className="productName" onClick={handleProductClick}>
         {product.name}
